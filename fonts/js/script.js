@@ -21,7 +21,7 @@ const appData = {
     servicesPercent: {},
     servicesNumber: {},
     allServicePrices: 0, // Добавлено
-    init: () => {
+    init:() => {
         appData.addRollback();
         appData.addTitle();
         rangeInput.addEventListener("input", appData.addRollback.bind(this));
@@ -29,23 +29,22 @@ const appData = {
         screen.addEventListener("click", appData.addScreenBlock.bind(appData));
     },
     inputDisable: () => {
-        for (let i = 0; i < inputText.length; i++) {
-            inputText[i].disabled = false;
+        for (let i = 0; i<inputText.length; i++ ) {
+            console.log(inputText[i])
         }
-
     },
-    addTitle: () => {
+    addTitle:() => {
         document.title = title.textContent;
     },
 
-    start: () => {
+    start:() => {
         appData.addScreens();
         if (this.screenPrice === 0) {
             alert("Введите значение");
             return;
         }
         appData.addServices();
-        appData.allServicePrices = appData.getAllServicePrices(); // Исправлено
+       appData.allServicePrices = appData.getAllServicePrices(); // Исправлено
         appData.addPrice();
         console.log(this);
     },
@@ -133,7 +132,7 @@ const appData = {
         }, 0);
     },
 
-    getFullPrice: () => {
+    getFullPrice:() => {
         console.log(appData.screenPrice);
         return appData.screenPrice + appData.getAllServicePrices();
     }
