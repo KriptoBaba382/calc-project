@@ -1,5 +1,5 @@
 const title = document.getElementsByTagName("h1")[0];
-const buttons = document.querySelector(".handler_btn"); // Исправлено
+const buttons = document.querySelector(".handler_btn");
 const screen = document.querySelector(".screen-btn");
 const otherPer = document.querySelectorAll(".other-items.percent");
 const otherNum = document.querySelectorAll(".other-items.number");
@@ -7,6 +7,9 @@ const rangeInput = document.querySelector('.rollback input[type="range"]');
 const rangeSpan = document.querySelector(".rollback span.range-value");
 const totalInput = document.getElementsByClassName("total-input");
 const inputText = document.querySelectorAll('input[type=text]')
+const selectElement = document.querySelectorAll('select');
+const startBtn = document.querySelector('#start');
+const resetBtn = document.querySelector('#reset');
 let blockScreen = document.querySelectorAll(".screen");
 
 const appData = {
@@ -20,20 +23,16 @@ const appData = {
     ServicePercentPrice: 0,
     servicesPercent: {},
     servicesNumber: {},
-    allServicePrices: 0, // Добавлено
+    allServicePrices: 0,
+    dynamicElements: [],
     init: () => {
         appData.addRollback();
         appData.addTitle();
-        rangeInput.addEventListener("input", appData.addRollback.bind(this));
+        rangeInput.addEventListener("input", appData.addRollback.bind(appData));
         buttons.addEventListener("click", appData.start.bind(appData));
         screen.addEventListener("click", appData.addScreenBlock.bind(appData));
     },
-    inputDisable: () => {
-        for (let i = 0; i < inputText.length; i++) {
-            inputText[i].disabled = false;
-        }
 
-    },
     addTitle: () => {
         document.title = title.textContent;
     },
@@ -45,14 +44,43 @@ const appData = {
             return;
         }
         appData.addServices();
-        appData.allServicePrices = appData.getAllServicePrices(); // Исправлено
+        appData.allServicePrices = appData.getAllServicePrices();
         appData.addPrice();
-        console.log(this);
+        appData.disableInputs();
+        appData.toggleButtons();
+        console.log(appData);
     },
-
+    changeButtons: () => {
+        if (startBtn && resetBtn) {
+            startBtn.style.display = 'none';
+            resetBtn.style.display = 'block';
+        }
+    },
+    reternButtons: () => {
+        if (startBtn && resetBtn) {
+            startBtn.style.display = 'block';
+            resetBtn.style.display = 'none';
+        }
+    },
+    disableInputs: () => {
+        for (let i = 0; i < inputText.length; i++) {
+            inputText[i].disabled = false;
+        }
+        for (let i = 0; i < selectElement.length; i++) {
+            selectElement[i].disabled = false;
+        }
+    },
+    enableInputs: () => {
+        for (let i = 0; i < inputText.length; i++) {
+            inputText[i].disabled = true;
+        }
+        for (let i = 0; i < selectElement.length; i++) {
+            selectElement[i].disabled = true;
+        }
+    },
     addScreens: () => {
         let blockScreen = document.querySelectorAll(".screen");
-        this.screens = []; // Очищаем перед добавлением
+        addPrice.screens = [];
         blockScreen.forEach((screen, index) => {
             const select = screen.querySelector("select");
             const input = screen.querySelector("input");
@@ -81,8 +109,8 @@ const appData = {
     },
 
     addServices: () => {
-        this.servicesPercent = {};
-        this.servicesNumber = {};
+        addPrice.servicesPercent = {};
+        addPrice.servicesNumber = {};
 
         otherPer.forEach((item) => {
             const check = item.querySelector("input[type=checkbox]");
@@ -90,7 +118,7 @@ const appData = {
             const input = item.querySelector("input[type=text]");
 
             if (check.checked) {
-                this.servicesPercent[label.textContent] = +input.value;
+                addPrice.servicesPercent[label.textContent] = +input.value;
             }
         });
 
@@ -109,22 +137,36 @@ const appData = {
 
     getAllServicePrices: () => {
         let sum = 0;
-        for (const key in this.servicesPercent) {
-            sum += this.servicesPercent[key];
-            this.servicePricesPercent = sum;
+        for (const key in appData.servicesPercent) {
+            sum += appData.servicesPercent[key];
+            appData.servicePricesPercent = sum;
         }
         let sam = 0;
-        for (const key in this.servicesNumber) {
-            sam += this.servicesNumber[key];
-            this.servicePricesNumber = sam;
+        for (const key in appData.servicesNumber) {
+            sam += appData.servicesNumber[key];
+            appData.servicePricesNumber = sam;
         }
-        return sum + sam; // Исправлено
+        return sum + sam;
+    },
+    reset: () => {
+        this.enableInputs();
+        this.reternButtons();
+        for (let i = 0; i < this.dynamicElements.length; i++) {
+            const element = this.dynamicElements(i);
+        }
+        this.dynamicElements = [];
+        for (let i = 0; i < inputText.length) {
+            inputText[i] = '';
+        }
+
+
     },
 
     addScreenBlock: () => {
         const cloneScreen = blockScreen[0].cloneNode(true);
         blockScreen[blockScreen.length - 1].after(cloneScreen);
-        blockScreen = document.querySelectorAll(".screen"); // Обновляем ссылку
+        blockScreen = document.querySelectorAll(".screen");
+        appData.dynamicElements.push(cloneScreen);
     },
 
     get screenPrice() {
@@ -139,4 +181,4 @@ const appData = {
     }
 };
 appData.init();
-appData.inputDisable();
+

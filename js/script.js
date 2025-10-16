@@ -7,7 +7,7 @@ const rangeInput = document.querySelector('.rollback input[type="range"]');
 const rangeSpan = document.querySelector(".rollback span.range-value");
 const totalInput = document.getElementsByClassName("total-input");
 const inputText = document.querySelectorAll('input[type=text]');
-const selectElement = document.querySelectorAll('select');
+const selectElement = document.querySelector('select');
 const startBtn = document.querySelector('#start');
 const resetBtn = document.querySelector('#reset');
 let blockScreen = document.querySelectorAll(".screen");
@@ -170,9 +170,8 @@ const appData = {
         for (let i = 0; i < inputText.length; i++) {
             inputText[i].value = '';
         }
-        for (let i = 0; i < selectElement.length; i++) {
-            selectElement[i].selectedIndex = 0;
-        }
+
+        selectElement.selectedIndex = 0;
 
         const checkboxes = document.querySelectorAll('input[type=checkbox]');
         for (let i = 0; i < checkboxes.length; i++) {
